@@ -12,11 +12,11 @@ public class GridCellVisual : MonoBehaviour
 
 
     // metoda do inicjalizacji wizualnej pola po jego utworzeniu
-    private void Initialize(GridCell gridCell)
+    public void Initialize(GridCell gridCell)
     {
         
         this.gridCell = gridCell;
-        
+
         if(spriteRenderer == null)
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
