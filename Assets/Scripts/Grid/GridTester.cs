@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 public class GridTester : MonoBehaviour
 {
 
@@ -19,6 +19,13 @@ public class GridTester : MonoBehaviour
         Debug.Log(board.IsInBounds(new GridPosition(3,5)));
         Debug.Log(board.IsInBounds(new GridPosition(-1,5)));
         Debug.Log(board.GetCell(new GridPosition(99,99)));
+
+        List<GridCell> sasiedzi = board.GetNeighbors(new GridPosition(3, 4));
+        Debug.Log($"Sąsiedzi (3,4): {sasiedzi.Count}");
+        foreach (GridCell cell in sasiedzi)
+        Debug.Log(cell);
+
+
     }
 
 
