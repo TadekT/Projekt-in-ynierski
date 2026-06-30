@@ -38,12 +38,20 @@ public class Unit
 
     public void TakeDamage(int amount)
     {
+<<<<<<< HEAD
         this.CurrentHp -= amount;
+=======
+        this.CurrentHp -= Math.Abs(amount);
+>>>>>>> Terrain
     }
 
     public void Heal(int amount)
     {
+<<<<<<< HEAD
         this.CurrentHp += amount;
+=======
+        this.CurrentHp += Math.Abs(amount);
+>>>>>>> Terrain
     }
 
 }
