@@ -3,9 +3,6 @@ using System;
 
 public class Unit 
 {
-
-    public enum Team {Player, Enemy};
-    
     public GridPosition Position {get ; private set ;}
     public int MaxHp {get; private set;}
     
