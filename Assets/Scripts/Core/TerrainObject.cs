@@ -1,5 +1,8 @@
 
 
+// klasa okreslajaca przeszkode znajdujaca sie na planszy
+// opisuje ilosc potrzebnych punktow akcji do przebycia przeszkody
+// oraz czy przeszkoda zaslania linie strzalu
 public class TerrainObject 
 {
 
