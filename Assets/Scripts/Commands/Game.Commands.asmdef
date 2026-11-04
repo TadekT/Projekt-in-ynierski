@@ -1,0 +1,16 @@
+{
+    "name": "Game.Commands",
+    "rootNamespace": "",
+    "references": [
+        "GUID:11da81cd586ade540936fee2b8f66177"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

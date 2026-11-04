@@ -37,6 +37,24 @@ public class TurnManagerTests
     }
 
     [Test]
+    public void EndTurn_ResetsFlagsOnlyForNewActiveTeam()
+    {
+        GameState state = CreateState();
+        Unit player = state.Units[0];
+        Unit enemy = state.Units[1];
+        player.MarkMoved();
+        player.MarkActed();
+        enemy.MarkMoved();
+        enemy.MarkActed();
+
+        new TurnManager(state).EndTurn(); 
+
+        Assert.IsFalse(enemy.HasMoved);
+        Assert.IsFalse(enemy.HasActed);
+        Assert.IsTrue(player.HasActed); 
+    }
+
+    [Test]
     public void EndTurn_Twice_ReturnsToPlayer()
     {
         GameState state = CreateState();
