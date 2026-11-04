@@ -1,0 +1,36 @@
+Obecna architektura projektu
+
+Turowa gra taktyczna 2D (siatka) z przeciwnikiem AI. Unity 2022.3 LTS, C#, URP.
+
+Zasada nadrzędna: logika oddzielona od Unity
+
+Kod jest podzielony na warstwy, a serce gry — cała logika rozgrywki — nie zależy od Unity:
+
+- Scripts/Core — czysta logika C#, bez `using UnityEngine`. Model planszy, jednostki, stan gry, tury, ekonomia, warunek zwycięstwa.
+- Scripts/Presentation — warstwa Unity: `MonoBehaviour`, rendering, UI. Tu żyją klasy dziedziczące po `MonoBehaviour`.
+
+
+Dlaczego prawie nie ma tu klas MonoBehaviour
+
+Bo na tym etapie budowany jest rdzeń logiczny gry, a nie jej oprawa. Klasy takie jak `GameState`, `Board`, `Unit`, `TurnManager` czy `CoreStone` 
+to zwykłe klasy C# — nie dziedziczą po `MonoBehaviour`, nie są podpięte do żadnego obiektu na scenie i nie potrzebują uruchomionej sceny, żeby działać.
+
+Ma to konkretne zalety:
+
+1. Testowalność. Logikę można sprawdzić bez odpalania Unity — wystarczy utworzyć obiekty w pamięci i odpytać ich stan.
+ Docelowo pokryją ją testy jednostkowe (NUnit / Unity Test Framework), co byłoby znacznie trudniejsze, gdyby każda klasa wymagała sceny i cyklu życia `MonoBehaviour`.
+
+2. Niezależność od silnika. Reguły gry nie są splątane z kodem renderującym. 
+Logika nie wie nic o sprite'ach, kamerze czy inpucie — operuje na współrzędnych i danych. Dzięki temu tę samą logikę dałoby się teoretycznie przenieść 
+lub uruchomić poza Unity.
+
+3. Jasny przepływ zależności. Prezentacja zależy od logiki, nigdy odwrotnie. Warstwa Unity tylko czyta stan gry i wysyła komendy — nie zawiera reguł rozgrywki.
+
+Gdzie MonoBehaviour faktycznie się pojawia
+
+Klasy `MonoBehaviour` są używane wyłącznie tam, gdzie faktycznie potrzebny jest most między logiką a Unity — na razie w postaci prostych klas testujących
+ (np. `GridTester`, `GameStateTester`), które w metodzie `Start()` tworzą obiekty logiki i wypisują ich stan przez `Debug.Log`. 
+Docelowo w warstwie prezentacji pojawią się właściwe klasy Unity: rendering planszy, wizualne jednostki, UI, obsługa sterowania.
+
+Innymi słowy: brak `MonoBehaviour` w rdzeniu nie jest przeoczeniem, lecz świadomą decyzją projektową. 
+Warstwa Unity dochodzi później i nakłada się na gotową, przetestowaną logikę.

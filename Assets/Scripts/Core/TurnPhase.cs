@@ -1,9 +1,7 @@
 
-// enum okreslajacy która faza rozgrywki jest aktualnie aktywna, potrzebne w GameState, TurnManager
+// enum określający, która faza rozgrywki jest aktualnie aktywna (GameState, TurnManager)
 public enum TurnPhase
 {
-    Shop,
     Action,
     EndTurn
-
 }

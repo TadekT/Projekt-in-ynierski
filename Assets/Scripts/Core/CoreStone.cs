@@ -1,7 +1,7 @@
 
 using System;
 
-public class CoreStone
+public class CoreStone : IAttackable
 {
     
 

@@ -16,19 +16,15 @@ public class TurnManager
     // Metoda obejmujaca logike zakonczenia tury
     public void EndTurn()
     {
-        
         gameState.AdvancePhase(); // Action -> EndTurn
-        if(gameState.CurrentPhase == TurnPhase.EndTurn)
+        if (gameState.CurrentPhase == TurnPhase.EndTurn)
         {
-            // domkniecie tury: zmiana strony, przychod many, reset jednostek
+            // domknięcie tury: zmiana strony, reset jednostek (mana uśpiona, bez rozbudowy)
             gameState.SwitchActiveTeam();
             gameState.AddMana(gameState.CurrentTeamTurn, 3);
             ResetUnitsForActiveTeam();
-            gameState.AdvancePhase(); // EndTurn -> Shop, nowa tura zaczyna sie od zakupow
-
+            gameState.AdvancePhase(); // EndTurn -> Action, nowa tura zaczyna się od akcji
         }
-
-
     }
 
     // Metoda resetujaca "HasActed" dla jednostek rozpoczynajacych swoja ture 

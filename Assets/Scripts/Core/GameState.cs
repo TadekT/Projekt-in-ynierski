@@ -25,7 +25,7 @@ public class GameState
         this.Units = units;
         this.CoreStones = coreStones;
         this.CurrentTeamTurn = Team.Player;
-        this.CurrentPhase = TurnPhase.Shop;
+        this.CurrentPhase = TurnPhase.Action;
         this.mana = new Dictionary<Team, int>
         {
             {Team.Player, 5 },
@@ -34,19 +34,16 @@ public class GameState
         
     }
 
-    //metoda do zmieniania faz rozgrywki, uzywana w TurnManager
+    // metoda do zmieniania faz rozgrywki, używana w TurnManager
     public void AdvancePhase()
     {
         switch (CurrentPhase)
         {
-            case TurnPhase.Shop:
-                CurrentPhase = TurnPhase.Action;
-                break;
             case TurnPhase.Action:
                 CurrentPhase = TurnPhase.EndTurn;
                 break;
             case TurnPhase.EndTurn:
-                CurrentPhase = TurnPhase.Shop;
+                CurrentPhase = TurnPhase.Action;
                 break;
         }
     }
@@ -100,6 +97,32 @@ public class GameState
         return false;
     }
 
+        // jednostka stojąca na polu (null, jeśli pole puste); zniszczone jednostki są pomijane
+    public Unit GetUnitAt(GridPosition pos)
+    {
+        foreach (Unit unit in Units)
+        {
+            if (!unit.IsDestroyed && unit.Position == pos) return unit;
+        }
+        return null;
+    }
+
+    // Kamień Źródła stojący na polu (null, jeśli brak)
+    public CoreStone GetCoreStoneAt(GridPosition pos)
+    {
+        foreach (CoreStone stone in CoreStones)
+        {
+            if (!stone.IsDestroyed && stone.Position == pos) return stone;
+        }
+        return null;
+    }
+
+    // jedno źródło prawdy o zajętości pola: jednostka albo Kamień Źródła
+    public bool IsOccupied(GridPosition pos)
+    {
+        return GetUnitAt(pos) != null || GetCoreStoneAt(pos) != null;
+    }
+    
     //metoda zwracajaca, kto wygral rozgrywke, sprawdza ktory kamien zostal zniszczony
     // jest to metoda Nullable, jesli zadna z druzyn jeszcze nie zniszczyla kamienia zycia, metoda zwraca null
     public Team? GetWinner()
