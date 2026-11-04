@@ -6,7 +6,7 @@ public class GameStateTests
     private GameState CreateState(out Unit playerUnit, out List<CoreStone> stones)
     {
         playerUnit = new Unit(new GridPosition(1, 1), Team.Player, 100);
-        var units = new List<Unit>
+        List<Unit> units = new List<Unit>
         {
             playerUnit,
             new Unit(new GridPosition(5, 5), Team.Enemy, 100)
@@ -22,7 +22,7 @@ public class GameStateTests
     [Test]
     public void GetUnitAt_ReturnsUnit_OrNullForEmptyCell()
     {
-        var state = CreateState(out var playerUnit, out _);
+        GameState state = CreateState(out Unit playerUnit, out _);
         Assert.AreSame(playerUnit, state.GetUnitAt(new GridPosition(1, 1)));
         Assert.IsNull(state.GetUnitAt(new GridPosition(2, 2)));
     }
@@ -30,7 +30,7 @@ public class GameStateTests
     [Test]
     public void IsOccupied_TrueForUnitAndCoreStone_FalseForEmptyCell()
     {
-        var state = CreateState(out _, out _);
+        GameState state = CreateState(out _, out _);
         Assert.IsTrue(state.IsOccupied(new GridPosition(1, 1)));
         Assert.IsTrue(state.IsOccupied(new GridPosition(9, 9)));
         Assert.IsFalse(state.IsOccupied(new GridPosition(3, 3)));
@@ -39,7 +39,7 @@ public class GameStateTests
     [Test]
     public void DestroyedUnit_DoesNotOccupyCell()
     {
-        var state = CreateState(out var playerUnit, out _);
+        GameState state = CreateState(out var playerUnit, out _);
         playerUnit.TakeDamage(999);
         Assert.IsFalse(state.IsOccupied(new GridPosition(1, 1)));
     }
@@ -47,7 +47,7 @@ public class GameStateTests
     [Test]
     public void GetWinner_IsNullAtStart_AndSetAfterEnemyStoneDestroyed()
     {
-        var state = CreateState(out _, out var stones);
+        GameState state = CreateState(out _, out List<CoreStone> stones);
         Assert.IsFalse(state.IsGameOver());
         Assert.IsNull(state.GetWinner());
         stones[1].TakeDamage(999);

@@ -10,7 +10,7 @@ public class UnitTests
     [Test]
     public void TakeDamage_ReducesHp_AndClampsAtZero()
     {
-        var unit = CreateUnit();
+        Unit unit = CreateUnit();
         unit.TakeDamage(30);
         Assert.AreEqual(70, unit.CurrentHp);
         unit.TakeDamage(999);
@@ -21,7 +21,7 @@ public class UnitTests
     [Test]
     public void TakeDamage_NegativeValue_StillReducesHp()
     {
-        var unit = CreateUnit();
+        Unit unit = CreateUnit();
         unit.TakeDamage(-10);
         Assert.AreEqual(90, unit.CurrentHp);
     }
@@ -29,7 +29,7 @@ public class UnitTests
     [Test]
     public void Heal_DoesNotExceedMaxHp()
     {
-        var unit = CreateUnit();
+        Unit unit = CreateUnit();
         unit.TakeDamage(20);
         unit.Heal(999);
         Assert.AreEqual(100, unit.CurrentHp);
@@ -38,7 +38,7 @@ public class UnitTests
     [Test]
     public void MoveTo_ChangesPosition()
     {
-        var unit = CreateUnit();
+        Unit unit = CreateUnit();
         unit.MoveTo(new GridPosition(3, 3));
         Assert.AreEqual(new GridPosition(3, 3), unit.Position);
     }
@@ -46,7 +46,7 @@ public class UnitTests
     [Test]
     public void ResetTurnState_ClearsActivationFlags()
     {
-        var unit = CreateUnit();
+        Unit unit = CreateUnit();
         unit.MarkMoved();
         unit.MarkActed();
         unit.ResetTurnState();
