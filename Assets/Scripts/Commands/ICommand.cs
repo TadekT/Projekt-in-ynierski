@@ -9,6 +9,6 @@ public interface ICommand
     void Execute(GameState state);
 
     //opis wykonanej komendy
-    string Descibe();
+    string Describe();
 
 }
