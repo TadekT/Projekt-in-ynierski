@@ -61,11 +61,6 @@ public class Board
         return neighbors;
     }
 
-
-
-
-
-
     public bool IsInBounds(GridPosition pos)
     {
         return pos.x >= 0 && pos.x < Width && pos.y >=0 && pos.y < Height;
@@ -82,6 +77,16 @@ public class Board
 
     }
 
-
+    // ustawia teren na polu; zwraca false, gdy pole leży poza planszą
+    public bool SetTerrain(GridPosition pos, TerrainObject terrain)
+    {
+        GridCell cell = GetCell(pos);
+        if (cell == null)
+        {
+            return false;
+        }
+        cell.SetTerrain(terrain);
+        return true;
+    }
 
 }

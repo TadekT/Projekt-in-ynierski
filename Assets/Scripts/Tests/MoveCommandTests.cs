@@ -95,7 +95,7 @@ public class MoveCommandTests
     {
         GameSession session = CreateSession(new GridPosition(4, 4), new GridPosition(8, 8),
             out GameState state, out Unit player, out _);
-        state.Board.GetCell(new GridPosition(4, 5)).SetWalkable(false);
+        state.Board.GetCell(new GridPosition(4, 5)).SetTerrain(TerrainObject.Rock);
 
         bool ok = session.Submit(new MoveCommand(player, new GridPosition(4, 5)), out string error);
 
