@@ -53,17 +53,18 @@ public class MoveCommand : ICommand
             error = "Pole jest nieprzekraczalne.";
             return false;
         }
-        if (GridPosition.Manhattan(unit.Position, target) != 1)
-        {
-            error = "Na razie dozwolony ruch tylko na sąsiednie pole.";
-            return false;
-        }
         if (state.IsOccupied(target))
         {
             error = "Pole jest zajęte.";
             return false;
         }
-
+        
+        Dictionary<GridPosition, int> reachable = Pathfinding.GetReachable(state, unit);
+        if (!reachable.ContainsKey(target))
+        {
+            error = "Pole jest poza zasięgiem ruchu.";
+            return false;
+        }
         error = null;
         return true;
     }

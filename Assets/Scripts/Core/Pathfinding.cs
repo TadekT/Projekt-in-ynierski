@@ -72,4 +72,98 @@ public static class Pathfinding
 
         return bestCost;
     }
+    
+    public static List<GridPosition> FindPath(GameState state, GridPosition from, GridPosition to)
+    {
+        if (from == to)
+        {
+            List<GridPosition> single = new List<GridPosition>();
+            single.Add(from);
+            return single;
+        }
+
+        GridCell targetCell = state.Board.GetCell(to);
+        if (targetCell == null || !targetCell.IsWalkable || state.IsOccupied(to))
+        {
+            return null;
+        }
+
+        Dictionary<GridPosition, int> gScore = new Dictionary<GridPosition, int>();
+        Dictionary<GridPosition, GridPosition> cameFrom = new Dictionary<GridPosition, GridPosition>();
+        List<GridPosition> open = new List<GridPosition>();
+
+        gScore[from] = 0;
+        open.Add(from);
+
+        while (open.Count > 0)
+        {
+            // wybór pola o najmniejszym f = g + h (h: odległość Manhattan do celu);
+            // przy remisie: pierwsze na liście
+            int bestIndex = 0;
+            int bestF = gScore[open[0]] + GridPosition.Manhattan(open[0], to);
+            for (int i = 1; i < open.Count; i++)
+            {
+                int f = gScore[open[i]] + GridPosition.Manhattan(open[i], to);
+                if (f < bestF)
+                {
+                    bestF = f;
+                    bestIndex = i;
+                }
+            }
+            GridPosition current = open[bestIndex];
+            open.RemoveAt(bestIndex);
+
+            if (current == to)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            foreach (GridPosition dir in Directions)
+            {
+                GridPosition next = new GridPosition(current.x + dir.x, current.y + dir.y);
+
+                GridCell cell = state.Board.GetCell(next);
+                if (cell == null || !cell.IsWalkable)
+                {
+                    continue;
+                }
+                if (state.IsOccupied(next))
+                {
+                    continue;
+                }
+
+                int tentative = gScore[current] + cell.MovementCost;
+                int oldCost;
+                if (gScore.TryGetValue(next, out oldCost) && oldCost <= tentative)
+                {
+                    continue;
+                }
+
+                cameFrom[next] = current;
+                gScore[next] = tentative;
+                if (!open.Contains(next))
+                {
+                    open.Add(next);
+                }
+            }
+        }
+
+        return null; // cel odcięty
+    }
+
+    // odtwarza ścieżkę od końca (po wskaźnikach cameFrom), potem odwraca kolejność
+    private static List<GridPosition> ReconstructPath(
+        Dictionary<GridPosition, GridPosition> cameFrom, GridPosition end)
+    {
+        List<GridPosition> path = new List<GridPosition>();
+        GridPosition current = end;
+        path.Add(current);
+        while (cameFrom.ContainsKey(current))
+        {
+            current = cameFrom[current];
+            path.Add(current);
+        }
+        path.Reverse();
+        return path;
+    }
 }

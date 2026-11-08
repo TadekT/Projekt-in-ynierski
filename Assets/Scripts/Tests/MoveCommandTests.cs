@@ -39,12 +39,12 @@ public class MoveCommandTests
     }
 
     [Test]
-    public void Submit_MoveTwoCellsAway_IsRejected_AndUnitStays()
+    public void Submit_MoveBeyondRange_IsRejected_AndUnitStays()
     {
         GameSession session = CreateSession(new GridPosition(1, 1), new GridPosition(8, 8),
             out GameState state, out Unit player, out _);
 
-        bool ok = session.Submit(new MoveCommand(player, new GridPosition(1, 3)), out string error);
+        bool ok = session.Submit(new MoveCommand(player, new GridPosition(1, 6)), out string error);
 
         Assert.IsFalse(ok);
         Assert.IsNotNull(error);
