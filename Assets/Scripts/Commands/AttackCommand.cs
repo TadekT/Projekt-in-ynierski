@@ -56,6 +56,12 @@ public class AttackCommand : ICommand
             error = "Cel poza zasięgiem ataku.";
             return false;
         }
+        // atak dystansowy wymaga czystej linii strzału
+        if (attacker.AttackRange > 1 && !LineOfSight.HasLine(state.Board, attacker.Position, target.Position))
+        {
+            error = "Linia strzału jest zasłonięta.";
+            return false;
+        }
 
         error = null;
         return true;

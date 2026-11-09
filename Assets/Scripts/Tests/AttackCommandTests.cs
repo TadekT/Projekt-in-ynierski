@@ -166,4 +166,66 @@ public class AttackCommandTests
         bool afterEnd = session.Submit(new EndTurnCommand(Team.Player), out string error2);
         Assert.IsFalse(afterEnd);
     }
+
+        [Test]
+    public void Submit_ArcherShootsOverEmptyLine_Works()
+    {
+        Unit player = UnitType.Archer.Create(new GridPosition(4, 4), Team.Player);
+        Unit enemy = UnitType.Warrior.Create(new GridPosition(4, 7), Team.Enemy);
+        GameSession session = CreateSession(player, enemy, out GameState state, out _);
+        // skała obok linii, nie na niej
+        state.Board.SetTerrain(new GridPosition(5, 5), TerrainObject.Rock);
+
+        bool ok = session.Submit(new AttackCommand(player, enemy), out string error);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(80, enemy.CurrentHp);
+    }
+
+    [Test]
+    public void Submit_ArcherBlockedByRock_IsRejected_AndNothingChanges()
+    {
+        Unit player = UnitType.Archer.Create(new GridPosition(4, 4), Team.Player);
+        Unit enemy = UnitType.Warrior.Create(new GridPosition(4, 7), Team.Enemy);
+        GameSession session = CreateSession(player, enemy, out GameState state, out _);
+        state.Board.SetTerrain(new GridPosition(4, 5), TerrainObject.Rock); // na linii strzału
+
+        bool ok = session.Submit(new AttackCommand(player, enemy), out string error);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual("Linia strzału jest zasłonięta.", error);
+        Assert.AreEqual(100, enemy.CurrentHp);
+        Assert.IsFalse(player.HasActed);
+        Assert.AreEqual(0, session.Log.Count);
+    }
+
+    [Test]
+    public void Submit_ArcherAdjacentToEnemy_IgnoresRockNearby()
+    {
+        Unit player = UnitType.Archer.Create(new GridPosition(4, 4), Team.Player);
+        Unit enemy = UnitType.Warrior.Create(new GridPosition(4, 5), Team.Enemy);
+        GameSession session = CreateSession(player, enemy, out GameState state, out _);
+        state.Board.SetTerrain(new GridPosition(3, 4), TerrainObject.Rock);
+        state.Board.SetTerrain(new GridPosition(5, 5), TerrainObject.Rock);
+
+        bool ok = session.Submit(new AttackCommand(player, enemy), out string error);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(80, enemy.CurrentHp);
+    }
+
+    [Test]
+    public void Submit_WarriorMelee_DoesNotRequireLineOfSight()
+    {
+        Unit player = UnitType.Warrior.Create(new GridPosition(4, 4), Team.Player);
+        Unit enemy = UnitType.Warrior.Create(new GridPosition(4, 5), Team.Enemy);
+        GameSession session = CreateSession(player, enemy, out GameState state, out _);
+        state.Board.SetTerrain(new GridPosition(3, 4), TerrainObject.Rock);
+
+        bool ok = session.Submit(new AttackCommand(player, enemy), out string error);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(75, enemy.CurrentHp);
+    }
+
 }
