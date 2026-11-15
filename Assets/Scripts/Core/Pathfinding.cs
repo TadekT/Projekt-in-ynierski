@@ -12,8 +12,7 @@ public static class Pathfinding
         new GridPosition(-1, 0)
     };
 
-    // zwraca wszystkie pola, do których jednostka dojdzie w ramach MoveRange,
-    // razem z kosztem dojścia, pole startowe ma koszt 0
+    // zwraca wszystkie pola, do których jednostka dojdzie w ramach MoveRange, razem z kosztem dojścia
     public static Dictionary<GridPosition, int> GetReachable(GameState state, Unit unit)
     {
         Dictionary<GridPosition, int> bestCost = new Dictionary<GridPosition, int>();
@@ -59,7 +58,7 @@ public static class Pathfinding
                 int oldCost;
                 if (bestCost.TryGetValue(next, out oldCost) && oldCost <= newCost)
                 {
-                    continue; // już znamy tańszą lub równie tanią drogę
+                    continue; // już znamy tańszą drogę
                 }
 
                 bestCost[next] = newCost;
@@ -97,8 +96,7 @@ public static class Pathfinding
 
         while (open.Count > 0)
         {
-            // wybór pola o najmniejszym f = g + h (h: odległość Manhattan do celu);
-            // przy remisie: pierwsze na liście
+            // wybór pola o najmniejszym f = g + h (h: odległość Manhattan do celu)
             int bestIndex = 0;
             int bestF = gScore[open[0]] + GridPosition.Manhattan(open[0], to);
             for (int i = 1; i < open.Count; i++)
@@ -148,12 +146,11 @@ public static class Pathfinding
             }
         }
 
-        return null; // cel odcięty
+        return null;
     }
 
-    // odtwarza ścieżkę od końca (po wskaźnikach cameFrom), potem odwraca kolejność
-    private static List<GridPosition> ReconstructPath(
-        Dictionary<GridPosition, GridPosition> cameFrom, GridPosition end)
+    
+    private static List<GridPosition> ReconstructPath(Dictionary<GridPosition, GridPosition> cameFrom, GridPosition end)
     {
         List<GridPosition> path = new List<GridPosition>();
         GridPosition current = end;

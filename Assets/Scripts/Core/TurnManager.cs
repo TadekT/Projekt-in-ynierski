@@ -19,7 +19,7 @@ public class TurnManager
         gameState.AdvancePhase(); // Action -> EndTurn
         if (gameState.CurrentPhase == TurnPhase.EndTurn)
         {
-            // domknięcie tury: zmiana strony, reset jednostek (mana uśpiona, bez rozbudowy)
+            // zmiana strony, reset jednostek
             gameState.SwitchActiveTeam();
             gameState.AddMana(gameState.CurrentTeamTurn, 3);
             ResetUnitsForActiveTeam();
@@ -27,7 +27,6 @@ public class TurnManager
         }
     }
 
-    // Metoda resetujaca "HasActed" dla jednostek rozpoczynajacych swoja ture 
     private void ResetUnitsForActiveTeam()
     {
         

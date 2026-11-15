@@ -14,6 +14,9 @@ public class MoveCommand : ICommand
         this.target = target;
     }
 
+    public Unit MovingUnit { get { return unit; } }
+    public GridPosition Destination { get { return target; } }
+
     public bool Validate(GameState state, out string error)
     {
         if (unit == null || !state.Units.Contains(unit))

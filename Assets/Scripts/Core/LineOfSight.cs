@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 public static class LineOfSight
 {
-    // Zwraca wszystkie pola odcinka a-b (z końcami), w kanonicznej kolejności.
+    // Zwraca wszystkie pola odcinka a-b
     public static List<GridPosition> GetLine(GridPosition a, GridPosition b)
     {
-        // Kanoniczna kolejność końców: mniejszy X, a przy remisie mniejszy Y.
-        // Dzięki temu GetLine(a, b) i GetLine(b, a) dają ten sam zbiór pól.
         GridPosition start = a;
         GridPosition end = b;
         if (a.x > b.x || (a.x == b.x && a.y > b.y))

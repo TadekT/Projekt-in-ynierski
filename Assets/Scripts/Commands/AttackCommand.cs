@@ -9,6 +9,9 @@ public class AttackCommand : ICommand
         this.target = target;
     }
 
+    public Unit Attacker { get { return attacker; } }
+    public IAttackable Target { get { return target; } }
+
     public bool Validate(GameState state, out string error)
     {
         if (attacker == null || !state.Units.Contains(attacker))

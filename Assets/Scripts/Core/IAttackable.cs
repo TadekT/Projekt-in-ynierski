@@ -1,5 +1,5 @@
     
-    // wspólny kontrakt dla wszystkiego, co można zaatakować (jednostka, Kamień Źródła)
+    // wspólny interfejs dla wszystkiego co można zaatakować
     public interface IAttackable
     {
         GridPosition Position { get; }
