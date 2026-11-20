@@ -23,11 +23,14 @@ public class GameController : MonoBehaviour
         Board board = new Board(10, 10);
 
         // teren na środku planszy.  
+        board.SetTerrain(new GridPosition(6, 5), TerrainObject.Swamp);
+        board.SetTerrain(new GridPosition(3, 4), TerrainObject.Swamp);
         board.SetTerrain(new GridPosition(4, 4), TerrainObject.Rock);
         board.SetTerrain(new GridPosition(5, 5), TerrainObject.Rock);
         board.SetTerrain(new GridPosition(4, 5), TerrainObject.Swamp);
         board.SetTerrain(new GridPosition(5, 4), TerrainObject.Swamp);
-
+        board.SetTerrain(new GridPosition(1, 5), TerrainObject.Rock);
+        board.SetTerrain(new GridPosition(8, 4), TerrainObject.Rock);
         
         List<Unit> units = new List<Unit>();
         AddUnit(units, UnitType.Warrior, 1, 0, Team.Player);

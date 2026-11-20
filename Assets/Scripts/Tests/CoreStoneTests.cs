@@ -19,5 +19,5 @@ public class CoreStoneTests
         CoreStone stone = new CoreStone(new GridPosition(0, 0), Team.Player, 100);
         stone.TakeDamage(999);
         Assert.AreEqual(0, stone.CurrentHp);
-    }
+    }    
 }

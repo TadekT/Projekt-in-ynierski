@@ -16,9 +16,9 @@ public class UnitType
         Damage = damage;
     }
 
-    // wartości startowe do dostrojenia przy balansie
-    public static readonly UnitType Warrior = new UnitType("Wojownik", 100, 3, 1, 25);
-    public static readonly UnitType Archer = new UnitType("Łucznik", 60, 3, 3, 20);
+    // statystyki jednostek 
+    public static readonly UnitType Warrior = new UnitType("Warrior", 100, 3, 1, 25);
+    public static readonly UnitType Archer = new UnitType("Archer", 60, 3, 3, 20);
     public static readonly UnitType Tank = new UnitType("Tank", 160, 2, 1, 15);
 
     public Unit Create(GridPosition position, Team team)

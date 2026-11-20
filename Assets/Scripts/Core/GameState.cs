@@ -14,8 +14,6 @@ public class GameState
     public Team CurrentTeamTurn {get; private set;}
     // aktualnie aktywna faza rozgrywki
     public TurnPhase CurrentPhase {get; private set;}
-    //slownik mapuje druzyne na jej aktualna ilosc many
-    private Dictionary<Team,int> mana;
 
     //konstruktor stanow gry
     public GameState(Board board, List<Unit> units, List<CoreStone> coreStones)
@@ -26,11 +24,6 @@ public class GameState
         this.CoreStones = coreStones;
         this.CurrentTeamTurn = Team.Player;
         this.CurrentPhase = TurnPhase.Action;
-        this.mana = new Dictionary<Team, int>
-        {
-            {Team.Player, 5 },
-            {Team.Enemy, 5 }
-        };
         
     }
 
@@ -63,30 +56,6 @@ public class GameState
 
     }
 
-    // uzyskiwanie dostepu do wartosci zmiennej mana
-    public int GetMana(Team team)
-    {
-        return mana[team];
-    }
-
-    // dodawanie many, na starcie tury
-    public void AddMana(Team team, int amount)
-    {
-        mana[team] += amount;
-    }
-
-    //  probuje wydac mane; zwraca false i nie odejmuje jesli nie stac
-    public bool TrySpendMana(Team team, int cost)
-    {
-        
-        if(mana[team] < cost)
-        {
-            return false;
-        }
-        mana[team] -= cost;
-        return true;
-
-    }
     //metoda logiczna sprawdzajaca czy kamien zycia zostal zniszczony
     public bool IsGameOver()
     {

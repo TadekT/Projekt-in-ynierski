@@ -72,12 +72,42 @@ public static class Pathfinding
         return bestCost;
     }
     
+
     public static List<GridPosition> FindPath(GameState state, GridPosition from, GridPosition to)
     {
+        return Search(state, from, to, true, null);
+    }
+
+    public static List<GridPosition> FindPath(GameState state, GridPosition from, GridPosition to, SearchStats stats)
+    {
+        return Search(state, from, to, true, stats);
+    }
+
+
+    public static List<GridPosition> FindPathUniform(GameState state, GridPosition from, GridPosition to, SearchStats stats)
+    {
+        return Search(state, from, to, false, stats);
+    }
+
+    private static List<GridPosition> Search(GameState state, GridPosition from, GridPosition to,
+        bool useHeuristic, SearchStats stats)
+    {
+        if (stats != null)
+        {
+            stats.Found = false;
+            stats.VisitedNodes = 0;
+            stats.PathCost = 0;
+            stats.PathLength = 0;
+        }
+
         if (from == to)
         {
             List<GridPosition> single = new List<GridPosition>();
             single.Add(from);
+            if (stats != null)
+            {
+                stats.Found = true;
+            }
             return single;
         }
 
@@ -96,12 +126,13 @@ public static class Pathfinding
 
         while (open.Count > 0)
         {
-            // wybór pola o najmniejszym f = g + h (h: odległość Manhattan do celu)
+            // wybór pola o najmniejszym f = g + h (h: Manhattan do celu albo 0 w wersji jednolitej);
+            // przy remisie: pierwsze na liście
             int bestIndex = 0;
-            int bestF = gScore[open[0]] + GridPosition.Manhattan(open[0], to);
+            int bestF = gScore[open[0]] + (useHeuristic ? GridPosition.Manhattan(open[0], to) : 0);
             for (int i = 1; i < open.Count; i++)
             {
-                int f = gScore[open[i]] + GridPosition.Manhattan(open[i], to);
+                int f = gScore[open[i]] + (useHeuristic ? GridPosition.Manhattan(open[i], to) : 0);
                 if (f < bestF)
                 {
                     bestF = f;
@@ -111,9 +142,21 @@ public static class Pathfinding
             GridPosition current = open[bestIndex];
             open.RemoveAt(bestIndex);
 
+            if (stats != null)
+            {
+                stats.VisitedNodes++;
+            }
+
             if (current == to)
             {
-                return ReconstructPath(cameFrom, current);
+                List<GridPosition> path = ReconstructPath(cameFrom, current);
+                if (stats != null)
+                {
+                    stats.Found = true;
+                    stats.PathCost = gScore[current];
+                    stats.PathLength = path.Count - 1;
+                }
+                return path;
             }
 
             foreach (GridPosition dir in Directions)
@@ -146,7 +189,7 @@ public static class Pathfinding
             }
         }
 
-        return null;
+        return null; // cel odcięty
     }
 
     

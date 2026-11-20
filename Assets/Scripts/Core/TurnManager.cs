@@ -21,7 +21,6 @@ public class TurnManager
         {
             // zmiana strony, reset jednostek
             gameState.SwitchActiveTeam();
-            gameState.AddMana(gameState.CurrentTeamTurn, 3);
             ResetUnitsForActiveTeam();
             gameState.AdvancePhase(); // EndTurn -> Action, nowa tura zaczyna się od akcji
         }

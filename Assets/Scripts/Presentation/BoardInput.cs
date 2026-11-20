@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// obsługa myszy gracza: wybór jednostki, podświetlenie legalnych akcji, wysłanie komendy.
-// Niczego nie zmienia w stanie bezpośrednio - tylko GameSession.Submit
+
 public class BoardInput : MonoBehaviour
 {
     [SerializeField] private GameController controller;
@@ -11,15 +10,20 @@ public class BoardInput : MonoBehaviour
 
     [Header("Podświetlenia (prefaby)")]
     [SerializeField] private GameObject selectionPrefab;
+    
     [SerializeField] private GameObject movePrefab;
     [SerializeField] private GameObject attackPrefab;
 
+    public IAttackable Inspected { get; private set; }
     private GameControls controls;
+    public Unit Selected { get { return selected; } }
     private Unit selected;
 
-    // pole -> komenda, którą wyślemy po kliknięciu tego pola
+
     private readonly Dictionary<GridPosition, ICommand> commandsByCell = new Dictionary<GridPosition, ICommand>();
     private readonly List<GameObject> highlights = new List<GameObject>();
+
+    private bool clickRequested;
 
     private void Awake()
     {
@@ -45,10 +49,25 @@ public class BoardInput : MonoBehaviour
         controls.Dispose();
     }
 
+    private void Update()
+    {
+        UpdateInspected();
+        if (!clickRequested)
+        {
+            return;
+        }
+        clickRequested = false;
+
+        if (!CanAct())
+        {
+            return;
+        }
+        HandleClick();
+    }
+
     private void OnClick(InputAction.CallbackContext context)
     {
-        if (!CanAct()) return;
-        HandleClick();
+        clickRequested = true;
     }
 
     private void OnEndTurn(InputAction.CallbackContext context)
@@ -57,7 +76,14 @@ public class BoardInput : MonoBehaviour
         EndTurn();
     }
 
-    // wejście gracza działa tylko w jego turze i przed końcem gry
+    public void EndTurnButton()
+    {
+        if (CanAct())
+        {
+            EndTurn();
+        }
+    }
+
     private bool CanAct()
     {
         GameState state = controller.State;
@@ -66,12 +92,16 @@ public class BoardInput : MonoBehaviour
 
     private void HandleClick()
     {
+
+        if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         Vector2 screen = controls.Gameplay.Point.ReadValue<Vector2>();
         Vector3 world = Camera.main.ScreenToWorldPoint(screen);
         GridPosition pos = BoardView.WorldToGrid(world);
         GameState state = controller.State;
 
-        // 1. pole ma przypisaną komendę (ruch lub atak) -> wysyłamy ją
         ICommand command;
         if (selected != null && commandsByCell.TryGetValue(pos, out command))
         {
@@ -79,7 +109,7 @@ public class BoardInput : MonoBehaviour
             if (controller.Session.Submit(command, out error))
             {
                 boardView.Refresh();
-                Select(selected); // po ruchu może zostać atak, po ataku lista będzie pusta
+                Select(selected);
             }
             else
             {
@@ -96,8 +126,29 @@ public class BoardInput : MonoBehaviour
             return;
         }
 
-        // 3. kliknięcie gdziekolwiek indziej -> odznaczenie
         Deselect();
+    }
+
+    private void UpdateInspected()
+    {
+        if (UnityEngine.EventSystems.EventSystem.current != null
+            && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            Inspected = null;
+            return;
+        }
+
+        Vector2 screen = controls.Gameplay.Point.ReadValue<Vector2>();
+        Vector3 world = Camera.main.ScreenToWorldPoint(screen);
+        GridPosition pos = BoardView.WorldToGrid(world);
+        GameState state = controller.State;
+
+        IAttackable found = state.GetUnitAt(pos);
+        if (found == null)
+        {
+            found = state.GetCoreStoneAt(pos);
+        }
+        Inspected = found;
     }
 
     private void Select(Unit unit)

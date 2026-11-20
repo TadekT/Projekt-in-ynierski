@@ -29,13 +29,13 @@ public class Unit : IAttackable
     public int AttackRange { get; private set; }
     public int Damage { get; private set; }
 
-    // konstruktor z domyślnymi statystykami (zachowuje dotychczasowe wywołania)
+    // konstruktor z domyślnymi statystykami
     public Unit(GridPosition pos, Team side, int maxHp)
         : this(pos, side, maxHp, 2, 2, 15)
     {
     }
 
-    // konstruktor z pełnym zestawem statystyk (pod typy jednostek)
+    // konstruktor z pełnym zestawem statystyk 
     public Unit(GridPosition pos, Team side, int maxHp, int moveRange, int attackRange, int damage)
     {
         this.Position = pos;
